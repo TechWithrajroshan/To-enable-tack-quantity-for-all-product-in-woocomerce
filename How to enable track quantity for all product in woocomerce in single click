@@ -1,0 +1,27 @@
+/**
+ * track qty for all product
+ */
+
+
+
+// Add the action to trigger the function
+add_action('init', 'enable_manage_stock_for_all_products');
+
+function enable_manage_stock_for_all_products() {
+    // Check if the current user has the 'manage_woocommerce' capability
+    if (current_user_can('manage_woocommerce')) {
+        // Get all products
+        $args = array(
+            'post_type' => 'product',
+            'posts_per_page' => -1, // Retrieve all products
+            'post_status' => 'publish'
+        );
+
+        $products = get_posts($args);
+
+        // Loop through each product and update the '_manage_stock' meta key
+        foreach ($products as $product) {
+            update_post_meta($product->ID, '_manage_stock', 'yes');
+        }
+    }
+}
